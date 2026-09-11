@@ -1,27 +1,16 @@
 """
-Sensitivity analysis: how much does the final forecast actually change if the
-(unsourced) COAL_GAS_DISCOUNT assumption in features.py is varied?
+Sensitivity analysis: how much does the final forecast actually change if the COAL_GAS_DISCOUNT assumption in features.py is varied?
 
 Since coal has no price series in the provided data, its cost is proxied as a fixed
-fraction of the gas price (COAL_GAS_DISCOUNT). Real market data shows this ratio is
-NOT stable (e.g. it moved from ~42% to ~23% within a year in real coal/gas markets) --
-so rather than pretend one fixed value is correct, this script tests a defensible range
-of the assumption directly through the pipeline and reports how much forecast.csv
-actually moves, instead of guessing.
+fraction of the gas price (COAL_GAS_DISCOUNT). Given the fluctuation of gas prices due to
+economic/political changes, the study of the ratio between coal and gas is studied.
 
 Runs, for each discount value in SCENARIOS:
-    1. python load_data.py --build-features   (rebuild history with the new discount)
+    1. python load_data.py --save-features    (rebuild history with the new discount)
     2. python build_future.py                 (rebuild the future scenario)
-    3. python generate_forecast.py             (retrain + regenerate forecast.csv)
+    3. python generate_forecast.py            (retrain + regenerate forecast.csv)
+    4. python backtest.py                     (apply backtest)
 then saves each run's forecast.csv separately and prints a comparison table.
-
-IMPORTANT: this overwrites src/features.py, output/history_features.pkl,
-output/future_features.pkl, and output/forecast.csv while running -- it backs up
-whatever was already there first and restores it automatically at the end, even if
-something fails partway through.
-
-Usage (run from the project root, i.e. the folder containing src/ and output/):
-    python coal_discount_sensitivity.py
 """
 import re
 import shutil
@@ -33,7 +22,6 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from model import HybridQuantileModel
 
 SCENARIOS = [0.25, 0.40, 0.5, 0.6, 0.7, 0.8]   # coal-gas discount values to test
 FEATURES_PATH = Path('features.py')
@@ -75,9 +63,6 @@ def run_step(args, log_name):
         raise RuntimeError(f'{" ".join(args)} failed -- see /tmp/{log_name}')
 
 def run_backtest_for_scenario():
-    """6-fold expanding-window backtest, using the SAME model class generate_forecast.py
-    actually deploys (RecencyWeightedHybrid) -- run fresh against whatever history_features.pkl
-    currently exists on disk (i.e. built with whichever discount is active right now)."""
     sys.path.insert(0, 'src')
     import importlib
     import model as model_module
@@ -163,10 +148,6 @@ def plot_scenarios(monthly, out_path='../temp/coal_discount_sensitivity.png'):
     print(f'\nPlot written to {out_path}')
 
 def plot_vs_history_by_calendar_month(out_path='../temp/coal_discount_vs_history.png'):
-    """For each scenario, average the forecast by CALENDAR month (1-12, pooling e.g. both
-    2026-09 and 2027-09 into one 'September' point) and plot alongside the real historical
-    average for that same calendar month -- shows whether each discount assumption still
-    tracks the real seasonal shape, not just the raw forecast level."""
     if not HISTORY_PRICE_CSV.exists():
         print(f'\nSkipping vs-history plot: {HISTORY_PRICE_CSV} not found '
               f'(edit HISTORY_PRICE_CSV at the top of this script to point at your data folder)')
