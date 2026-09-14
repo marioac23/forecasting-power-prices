@@ -64,13 +64,7 @@ def save_features():
 
 
 if __name__ == '__main__':
-    import sys
-    sys.path.insert(0, 'src')
-    if '--save-features' in sys.argv:
-        save_features()
-    else:
-        df, cap = build_history()
-        print(df.shape)
-        print(df.isna().sum()[df.isna().sum() > 0])
-        print(df.tail(3).T)
-        print("\n(run with --save-features to also write output/history_features.pkl)")
+    
+    save_features()
+    print("Saved file to output/history_features.pkl")
+    
