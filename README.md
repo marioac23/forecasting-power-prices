@@ -2,8 +2,8 @@
 
 Hourly forecast of the DE-LU (Germany-Luxembourg) day-ahead electricity price for
 every hour from **1 Sep 2026 00:00 to 31 Dec 2027 23:00**, built entirely from the
-six provided historical CSVs (1 Jan 2025 - 7 Aug 2026) — no forward curves, weather
-data, or other external sources. Every assumption about how 2026-2027 fundamentals
+six provided historical CSVs (1 Jan 2025 - 7 Aug 2026) (no forward curves, weather
+data, or other external sources). Every assumption about how 2026-2027 fundamentals
 (gas, EUA, load, renewables, capacity) evolve is written down and justified rather
 than pulled from a live market source.
 
