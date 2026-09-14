@@ -25,6 +25,7 @@ for the full method, assumptions, backtest results, and limitations.
 │   ├── de_lu_wind_solar_da_forecast_hourly.csv
 │   ├── de_lu_installed_capacity_yearly.csv
 │   └── fuel_carbon_prices_daily.csv
+├── plots/                <- plots of the forecast output
 ├── output/               <- everything the pipeline writes lands here
 │   ├── history_features.pkl
 │   ├── future_features.pkl
