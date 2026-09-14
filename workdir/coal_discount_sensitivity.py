@@ -6,7 +6,7 @@ fraction of the gas price (COAL_GAS_DISCOUNT). Given the fluctuation of gas pric
 economic/political changes, the study of the ratio between coal and gas is studied.
 
 Runs, for each discount value in SCENARIOS:
-    1. python load_data.py --save-features    (rebuild history with the new discount)
+    1. python load_data.py                    (rebuild history with the new discount)
     2. python build_future.py                 (rebuild the future scenario)
     3. python generate_forecast.py            (retrain + regenerate forecast.csv)
     4. python backtest.py                     (apply backtest)
@@ -98,7 +98,7 @@ def run_scenario(discount):
     pct = int(round(discount * 100))
     print(f'--- scenario: COAL_GAS_DISCOUNT = {discount} ({pct}%) ---')
     set_coal_gas_discount(discount)
-    run_step(['load_data.py', '--save-features'], f'scenario_{pct}_hist.log')
+    run_step(['load_data.py'], f'scenario_{pct}_hist.log')
     run_step(['build_future.py'], f'scenario_{pct}_future.log')
     run_step(['generate_forecast.py'], f'scenario_{pct}_forecast.log')
     SCENARIO_OUT_DIR.mkdir(exist_ok=True)
